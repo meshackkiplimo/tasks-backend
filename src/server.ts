@@ -12,6 +12,10 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.get("/", (req, res) => {
+    res.send("Server is running!");
+  });
+  
 
 // Routes
 app.use("/api/tasks", taskRoutes);
