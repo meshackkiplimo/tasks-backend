@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Task, { ITask } from "../models/Task";
 
 // Create a new Task
-export const createTask = async (req: Request, res: Response) => {
+export const createTask = async (req: Request, res: Response): Promise<void> => {
   try {
     const { title, date, task, learned, conclusion } = req.body;
     const newTask: ITask = new Task({ title, date, task, learned, conclusion });
@@ -14,7 +14,7 @@ export const createTask = async (req: Request, res: Response) => {
 };
 
 // Get all tasks
-export const getAllTasks = async (_req: Request, res: Response) => {
+export const getAllTasks = async (_req: Request, res: Response): Promise<void> => {
   try {
     const tasks = await Task.find().sort({ date: -1 });
     res.status(200).json(tasks);
@@ -24,12 +24,13 @@ export const getAllTasks = async (_req: Request, res: Response) => {
 };
 
 // Get a single task by ID
-export const getTaskById = async (req: Request, res: Response) => {
+export const getTaskById = async (req: Request, res: Response): Promise<void> => {
   try {
     const task = await Task.findById(req.params.id);
-    if (!task) 
-        return 
-    res.status(404).json({ message: "Task not found" });
+    if (!task) {
+      res.status(404).json({ message: "Task not found" });
+      return;
+    }
     res.status(200).json(task);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -37,25 +38,27 @@ export const getTaskById = async (req: Request, res: Response) => {
 };
 
 // Update a Task
-export const updateTask = async (req: Request, res: Response) => {
+export const updateTask = async (req: Request, res: Response): Promise<void> => {
   try {
     const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedTask) 
-        return 
-    res.status(404).json({ message: "Task not found" });
+    if (!updatedTask) {
+      res.status(404).json({ message: "Task not found" });
+      return;
+    }
     res.status(200).json(updatedTask);
-  } catch (error:any) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 };
 
 // Delete a Task
-export const deleteTask = async (req: Request, res: Response) => {
+export const deleteTask = async (req: Request, res: Response): Promise<void> => {
   try {
     const deletedTask = await Task.findByIdAndDelete(req.params.id);
-    if (!deletedTask) 
-        return 
-    res.status(404).json({ message: "Task not found" });
+    if (!deletedTask) {
+      res.status(404).json({ message: "Task not found" });
+      return;
+    }
     res.status(200).json({ message: "Task deleted" });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
